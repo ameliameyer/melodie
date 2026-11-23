@@ -36,9 +36,9 @@ main{max-width:1050px;padding:35px 22px 80px}
 .lesson button:hover{border-color:#455b75}
 footer{background:#1a222c;color:white;padding:30px}
 @media(max-width:640px){.site-hero{min-height:285px;padding:35px 16px 26px}nav{gap:7px}.hero{padding:4px 0 12px}main{padding:25px 16px 60px}}
-.staff-wrap{overflow-x:auto;padding:14px 0;background:#fff;border-radius:10px}.staff-wrap svg{display:block}.lesson-guide{margin:8px 0 20px}.lesson-guide h3{margin:20px 0 8px;color:#1a222c}.lesson-guide ol{line-height:1.9;color:#4f5c69}.answer-options{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.answer-options button{border:1px solid #ccd4df;border-radius:8px;background:#f2f5f8;padding:10px 15px}.answer-options button:hover{border-color:#455b75}.circle-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px;margin-top:24px;align-items:start}.diatonic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin:14px 0}.diatonic-grid div{background:#f2f5f8;border-radius:8px;padding:12px;text-align:center}.diatonic-grid small{display:block;color:#5d6772;margin-bottom:6px}.diatonic-grid strong{font-size:16px}@media(max-width:750px){.circle-layout{grid-template-columns:1fr}} .black.black-on{background:#557ea8;box-shadow:inset 0 0 0 2px #b6d4f0}.shape-card{margin-top:16px;border:1px solid #e1e6ec;border-radius:12px;padding:18px;max-width:440px}.shape-card p{font-size:12px}</style></head><body><header class="site-hero"><div class="hero-particles" aria-hidden="true"></div><div class="site-hero-inner"><div class="site-eyebrow">MY MUSIC LEARNING LAB</div><div class="logo">Mélodie</div><p class="site-subtitle">Music theory · Piano · Guitar · Cello</p><nav id="nav"></nav></div></header><main id="app"></main><footer>Made for the joy of learning music · Mélodie</footer>
+.staff-wrap{overflow-x:auto;padding:14px 0;background:#fff;border-radius:10px}.staff-wrap svg{display:block}.lesson-guide{margin:8px 0 20px}.lesson-guide h3{margin:20px 0 8px;color:#1a222c}.lesson-guide ol{line-height:1.9;color:#4f5c69}.answer-options{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.answer-options button{border:1px solid #ccd4df;border-radius:8px;background:#f2f5f8;padding:10px 15px}.answer-options button:hover{border-color:#455b75}.circle-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px;margin-top:24px;align-items:start}.diatonic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin:14px 0}.diatonic-grid div{background:#f2f5f8;border-radius:8px;padding:12px;text-align:center}.diatonic-grid small{display:block;color:#5d6772;margin-bottom:6px}.diatonic-grid strong{font-size:16px}@media(max-width:750px){.circle-layout{grid-template-columns:1fr}} .black.black-on{background:#557ea8;box-shadow:inset 0 0 0 2px #b6d4f0}.shape-card{margin-top:16px;border:1px solid #e1e6ec;border-radius:12px;padding:18px;max-width:440px}.shape-card p{font-size:12px}.chord-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.chord-grid .shape-card{margin:0;padding:12px}.chord-grid .shape-card svg{max-width:260px}.chord-grid .shape-card p{font-size:11px}</style></head><body><header class="site-hero"><div class="hero-particles" aria-hidden="true"></div><div class="site-hero-inner"><div class="site-eyebrow">MY MUSIC LEARNING LAB</div><div class="logo">Mélodie</div><p class="site-subtitle">Music theory · Piano · Guitar · Cello</p><nav id="nav"></nav></div></header><main id="app"></main><footer>Made for the joy of learning music · Mélodie</footer>
 <script>
-const pages=['Home','Learn','Instruments','Scales & Chords','Circle of Fifths','Sheet Music','Practice'];
+const pages=['Home','Learn','Instruments','Scales & Chords','Circle of Fifths','Guitar Chords','Sheet Music','Practice'];
 let page='Home', instrument='Piano', root='C', scale='Major', libraryFilter='All';
 const chromatic=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
 const patterns={Major:[0,2,4,5,7,9,11],Minor:[0,2,3,5,7,8,10],Pentatonic:[0,2,4,7,9]};
@@ -153,9 +153,15 @@ const guitarShapes={
 'G':[{name:'Open G',frets:[3,2,0,0,0,3],fingers:[2,1,0,0,0,3]}],
 'A':[{name:'Open A',frets:[-1,0,2,2,2,0],fingers:[0,0,1,2,3,0]}],
 'B':[{name:'B barre (2nd fret)',frets:[-1,2,4,4,4,2],fingers:[0,1,3,3,3,1]}],
+'Cm':[{name:'C minor barre (3rd fret)',frets:[-1,3,5,5,4,3],fingers:[0,1,3,4,2,1]}],
+'Bm':[{name:'B minor barre (2nd fret)',frets:[-1,2,4,4,3,2],fingers:[0,1,3,4,2,1]}],
+'Fm':[{name:'F minor barre (1st fret)',frets:[1,3,3,1,1,1],fingers:[1,3,4,1,1,1]}],
+'Gm':[{name:'G minor barre (3rd fret)',frets:[3,5,5,3,3,3],fingers:[1,3,4,1,1,1]}],
 'Am':[{name:'Open A minor',frets:[-1,0,2,2,1,0],fingers:[0,0,2,3,1,0]}],
 'Em':[{name:'Open E minor',frets:[0,2,2,0,0,0],fingers:[0,2,3,0,0,0]}],
 'Dm':[{name:'Open D minor',frets:[-1,-1,0,2,3,1],fingers:[0,0,0,2,3,1]}],
+'F7':[{name:'F7 barre',frets:[1,3,1,2,1,1],fingers:[1,3,1,2,1,1]}],
+'B7':[{name:'Open B7',frets:[-1,2,1,2,0,2],fingers:[0,2,1,3,0,4]}],
 'G7':[{name:'Open G7',frets:[3,2,0,0,0,1],fingers:[3,2,0,0,0,1]}],
 'C7':[{name:'Open C7',frets:[-1,3,2,3,1,0],fingers:[0,3,2,4,1,0]}],
 'D7':[{name:'Open D7',frets:[-1,-1,0,2,1,2],fingers:[0,0,0,2,1,3]}],
@@ -163,18 +169,25 @@ const guitarShapes={
 'A7':[{name:'Open A7',frets:[-1,0,2,0,2,0],fingers:[0,0,2,0,3,0]}]
 };
 function chordShapeKey(){const n=notationData().tonic;return n+(chordQuality==='Minor'?'m':chordQuality==='Dominant 7'?'7':'')}
-function guitarShapeHTML(){
-if(notationMode!=='Chord')return '';
-const key=chordShapeKey(),shapes=(chordQuality==='Major'||chordQuality==='Minor'||chordQuality==='Dominant 7')?guitarShapes[key]:null;
-if(!shapes)return '<p class="muted">No verified beginner chord shape is included for '+key+' yet. Use the fretboard note map above to explore its tones.</p>';
-return '<h3>Guitar chord diagram</h3><p class="muted">A visual guide to where your fingers go. For barre chords, the long blue bar represents one finger pressing multiple strings.</p>'+shapes.map(s=>{
+function guitarDiagram(key,s){
 const active=s.frets.filter(f=>f>0),first=Math.max(1,Math.min(...active)),base=first>3?first:1;
 const x=i=>55+i*43,y=f=>43+(f-base+1)*39;
 const lines=Array.from({length:6},(_,i)=>'<line x1="'+x(i)+'" x2="'+x(i)+'" y1="43" y2="238" stroke="#7a8794"/>').join('')+Array.from({length:6},(_,i)=>'<line x1="55" x2="270" y1="'+(43+i*39)+'" y2="'+(43+i*39)+'" stroke="#7a8794" stroke-width="'+(i===0&&base===1?4:1.5)+'"/>').join('');
 const barre=key==='F'&&s.frets.join(',')==='1,3,3,2,1,1'?'<rect x="42" y="51" width="241" height="23" rx="11" fill="#455b75" opacity=".85"/><text x="52" y="68" text-anchor="middle" font-size="12" fill="white">1</text><text x="267" y="68" text-anchor="middle" font-size="12" fill="white">1</text>':'';
 const marks=s.frets.map((f,i)=>barre&&f===1?'':f<0?'<text x="'+x(i)+'" y="29" text-anchor="middle" font-size="16" fill="#5d6772">×</text>':f===0?'<text x="'+x(i)+'" y="29" text-anchor="middle" font-size="18" fill="#5d6772">○</text>':'<circle cx="'+x(i)+'" cy="'+(y(f)-19.5)+'" r="15" fill="#455b75"/><text x="'+x(i)+'" y="'+(y(f)-15)+'" text-anchor="middle" font-size="13" fill="white">'+(s.fingers[i]||'')+'</text>').join('');
 return '<div class="shape-card"><strong>'+s.name+'</strong><svg viewBox="0 0 325 265" role="img" aria-label="'+s.name+' guitar chord diagram" style="width:100%;max-width:330px;display:block">'+(base>1?'<text x="15" y="64" font-size="13" fill="#1a222c">'+base+'fr</text>':'')+lines+marks+'</svg><p class="muted">× = mute · ○ = open string · Numbers = fretting fingers (1 index through 4 pinky). Read strings left to right: E A D G B e.</p></div>';
-}).join('');
+
+}
+
+function guitarShapeHTML(){
+if(notationMode!=='Chord')return '';
+const key=chordShapeKey(),shapes=(chordQuality==='Major'||chordQuality==='Minor'||chordQuality==='Dominant 7')?guitarShapes[key]:null;
+if(!shapes)return '<p class="muted">This chord shape is not in the beginner library yet. See the note explorer below.</p>';
+return '<h3>Guitar chord diagram</h3><p class="muted">A visual guide to where your fingers go. A long blue bar shows a finger pressing multiple strings.</p>'+shapes.map(s=>guitarDiagram(key,s)).join('');
+}
+function guitarQuickSheet(){
+const groups=[['Major',['C','D','E','F','G','A','B']],['Minor',['Am','Bm','Cm','Dm','Em','Fm','Gm']],['Dominant 7',['A7','B7','C7','D7','E7','F7','G7']]];
+return '<h1>Guitar Chord Cheat Sheet</h1><p>Common guitar chords at a glance. Each diagram shows six strings from low E (left) to high e (right). ○ means play open; × means do not play; numbers are fretting fingers. Barre shapes use one finger across multiple strings.</p>'+groups.map(g=>'<section class="panel"><h2>'+g[0]+' chords</h2><div class="chord-grid">'+g[1].map(key=>guitarDiagram(key,guitarShapes[key][0])).join('')+'</div></section>').join('');
 }
 function celloHTML(){
 const strings=[{name:'A',pitch:9,oct:3},{name:'D',pitch:2,oct:3},{name:'G',pitch:7,oct:2},{name:'C',pitch:0,oct:2}],rootPitch=chromatic.indexOf(root),intervals=notationMode==='Chord'?qualities[chordQuality].intervals:patterns[scale];
@@ -239,6 +252,7 @@ let content='';
 if(page==='Home')content='<section class="hero"><div><div class="eyebrow">Your personal music learning space</div><h1>Music makes sense here.</h1><p>Learn the theory once. Discover how it connects across piano, guitar, and cello. Build your own library along the way.</p><button class="primary" onclick="setPage(\'Learn\')">Start learning →</button></div><div class="hero-art">♫</div></section><div class="cards">'+[['📖','Music Theory','A structured curriculum','Learn'],['🎹','Scales & Chords','Explore notes across instruments','Scales & Chords'],['🎼','Sheet Music','Your personal collection','Sheet Music'],['✓','Practice','Build confidence through repetition','Practice']].map(c=>'<button class="card" onclick="setPage(\''+c[3]+'\')"><div class="emoji">'+c[0]+'</div><h3>'+c[1]+'</h3><p>'+c[2]+'</p></button>').join('')+'</div><div class="panel" style="margin-top:24px"><h3>Learning progress</h3><p>'+done+' of '+lessons.length+' foundational modules marked complete</p><div class="progress"><div style="width:'+(done/lessons.length*100)+'%"></div></div></div>';
 if(page==='Learn')content='<h1>Learn Music Theory</h1><p>Written study guides with explanations, examples, step-by-step breakdowns, and practice. Progress is saved in this browser.</p><div class="panel"><strong>'+completion().length+' of '+lessons.length+' modules complete</strong><div class="progress"><div style="width:'+(completion().length/lessons.length*100)+'%"></div></div></div>'+lessons.map((l,i)=>'<div class="lesson"><button onclick="showLesson('+i+')"><span class="pill">Module '+(i+1)+'</span> <strong>'+l[0]+'</strong> — '+l[1]+' <span style="float:right">'+(completion().includes(i)?'✓ Complete':openLesson===i?'− Open':'+ Study')+'</span></button>'+(openLesson===i?guideHTML(i):'')+'</div>').join('');
 if(page==='Instruments')content='<h1>Instruments</h1><p>Learn technique separately while connecting everything back to shared music theory.</p><div class="cards">'+[['🎹','Piano','Keyboard geography, hand coordination, and notation'],['🎸','Guitar','Fretboard notes, chord shapes, strumming, and tabs'],['🎻','Cello','Fingerboard positions, bowing, and reading bass clef (coming later)']].map(c=>'<div class="card"><div class="emoji">'+c[0]+'</div><h3>'+c[1]+'</h3><p>'+c[2]+'</p></div>').join('')+'</div>';
+if(page==='Guitar Chords')content=guitarQuickSheet();
 if(page==='Scales & Chords')content=explorer();
 if(page==='Circle of Fifths')content=circleHTML();
 if(page==='Sheet Music')content='<h1>Sheet Music Library</h1><p>A place for PDFs, tabs, and scores. This starter library shows example metadata; adding and saving your own files will come in a later release.</p>'+buttons(['All','Piano','Guitar','Cello'],libraryFilter,'setFilter')+'<div class="cards">'+songs.filter(s=>libraryFilter==='All'||s.instrument===libraryFilter).map(s=>'<div class="card"><span class="pill">'+s.instrument+'</span><h3>'+s.title+'</h3><p>'+s.artist+' · '+s.format+' · '+s.status+'</p></div>').join('')+'</div>';
