@@ -190,9 +190,22 @@ const key=chordShapeKey(),shapes=(chordQuality==='Major'||chordQuality==='Minor'
 if(!shapes)return '<p class="muted">This chord shape is not in the beginner library yet. See the note explorer below.</p>';
 return '<h3>Guitar chord diagram</h3><p class="muted">A visual guide to where your fingers go. A long blue bar shows a finger pressing multiple strings.</p>'+shapes.map(s=>guitarDiagram(key,s)).join('');
 }
+
+Object.assign(guitarShapes,{
+'F#m':[{name:'F♯ minor barre · fret 2',frets:[2,4,4,2,2,2],fingers:[1,3,4,1,1,1]}],
+'G#m':[{name:'G♯ minor barre · fret 4',frets:[4,6,6,4,4,4],fingers:[1,3,4,1,1,1]}],
+'C#m':[{name:'C♯ minor barre · fret 4',frets:[-1,4,6,6,5,4],fingers:[0,1,3,4,2,1]}],
+'F#':[{name:'F♯ major barre · fret 2',frets:[2,4,4,3,2,2],fingers:[1,3,4,2,1,1]}],
+'Bb':[{name:'B♭ major barre · fret 1',frets:[-1,1,3,3,3,1],fingers:[0,1,3,3,3,1]}],
+'Bbm':[{name:'B♭ minor barre · fret 1',frets:[-1,1,3,3,2,1],fingers:[0,1,3,4,2,1]}],
+'Ab':[{name:'A♭ major barre · fret 4',frets:[4,6,6,5,4,4],fingers:[1,3,4,2,1,1]}],
+'Db':[{name:'D♭ major barre · fret 4',frets:[-1,4,6,6,6,4],fingers:[0,1,3,3,3,1]}]
+});
+
 function guitarQuickSheet(){
 const groups=[['Major',['C','D','E','F','G','A','B']],['Minor',['Am','Bm','Cm','Dm','Em','Fm','Gm']],['Dominant 7',['A7','B7','C7','D7','E7','F7','G7']]];
-return '<h1>Guitar Chord Cheat Sheet</h1><p>Common guitar chords at a glance. Each diagram shows six strings from low E (left) to high e (right). ○ means play open; × means do not play; numbers are fretting fingers. Barre shapes use one finger across multiple strings.</p>'+groups.map(g=>'<section class="panel"><h2>'+g[0]+' chords</h2><div class="chord-grid">'+g[1].map(key=>guitarDiagram(key,guitarShapes[key][0])).join('')+'</div></section>').join('');
+const barreGroups=[['E-shape major',['F','F#','Ab']],['E-shape minor',['Fm','F#m','Gm','G#m']],['A-shape major',['Bb','B','Db']],['A-shape minor',['Bbm','Bm','Cm','C#m']]];
+return '<h1>Guitar Chord Cheat Sheet</h1><p>Common guitar chords at a glance. Each diagram shows six strings from low E (left) to high e (right). ○ means play open; × means do not play; numbers are fretting fingers. Barre shapes use one finger across multiple strings.</p>'+groups.map(g=>'<section class="panel"><h2>'+g[0]+' chords</h2><div class="chord-grid">'+g[1].map(key=>guitarDiagram(key,guitarShapes[key][0])).join('') +'</div></section>').join('')+'<section class="panel"><h2>Common Barre Chords</h2><p>Moveable shapes: E-shape barre chords use the low E-string root; A-shape barre chords use the A-string root. The index finger bars across the fret while other fingers form the chord. Start with F, Bm, and B; then move each shape up the neck.</p>'+barreGroups.map(g=>'<h3>'+g[0]+'</h3><div class="chord-grid">'+g[1].map(key=>guitarDiagram(key,guitarShapes[key][0])).join('')+'</div>').join('')+'<p class="muted">Tip: First fret each note cleanly, then practice switching slowly. Finger numbers indicate a suggested fingering; repeated 1s can represent the barre.</p></section>';
 }
 function celloHTML(){
 const strings=[{name:'A',pitch:9,oct:3},{name:'D',pitch:2,oct:3},{name:'G',pitch:7,oct:2},{name:'C',pitch:0,oct:2}],rootPitch=chromatic.indexOf(root),intervals=notationMode==='Chord'?qualities[chordQuality].intervals:patterns[scale];
@@ -269,6 +282,15 @@ Piano:[
 ['Build and invert a triad','Applying shared chord theory','A triad has three chord tones. On piano, you can play them together or separately. An inversion changes which chord tone is lowest without changing the chord identity.','Play C–E–G together, then E–G–C for first inversion.',['Read the shared Chords theory guide.','Find C, E, and G on the keyboard and play them together.','Move the lowest C up an octave to make E–G–C.','Compare the sound and hand shape of both arrangements.'],'What changes in a chord inversion?',['The chord name','The lowest chord tone','The number of keys on the piano'],1,'Inversions reorder the same chord tones by changing the bass note.','Scales & Chords']
 ]
 };
+
+instrumentPaths.Guitar.push(
+['Hammer-ons','Legato technique · 0h2','A hammer-on sounds a second, higher note without picking it again. In tablature, 0h2 means play the open string and hammer a finger onto fret 2.','Cherry Wine uses 2h4 on the G string in the intro.',['Pick G string fret 2 with your index finger.','Without picking again, press fret 4 quickly with your ring finger.','Repeat slowly, listening for two clear notes.','Find 2h4 in the Cherry Wine intro and play the phrase.'],'What does 2h4 mean?',['Pick both notes separately','Pick fret 2, then hammer onto fret 4','Slide down to fret 2'],1,'The second note is sounded by the fretting hand.','Sheet Music'],
+['Pull-offs','Legato technique · 4p2p0','A pull-off sounds a lower note by releasing a higher fretted note with a slight plucking motion. For 4p2p0, prepare frets 4 and 2, pick fret 4, pull to 2, then pull to the open string.','Cherry Wine uses 4p2p0 on the G string.',['Fret G string at 2 and 4 with two fingers.','Pick fret 4 and pull the finger slightly away to sound fret 2.','Pull off fret 2 to sound the open G.','Practice three even notes without repicking.'],'What does the p in 4p2 mean?',['Pull-off','Palm mute','Pick twice'],0,'A pull-off lets the fretting hand sound the second note.','Sheet Music'],
+['Slides up','Connected notes · 1/3','A slide carries a note from one fret to another while the finger stays in contact with the string. The / symbol means move toward a higher fret.','Cherry Wine instrumental uses 1/3 on the B string.',['Fret B string at fret 1.','Pick once, then slide the same finger to fret 3.','Keep enough pressure for a continuous tone.','Repeat with a slow count, landing accurately on fret 3.'],'What does 1/3 indicate?',['Slide from fret 1 to fret 3','Play strings 1 and 3','Pull off to fret 1'],0,'The slash points to a higher target fret.','Sheet Music'],
+['Slides down','Connected notes · 3\\1','A backslash in guitar tab indicates a slide toward a lower fret. Keep your finger on the string so the two notes connect.','Cherry Wine instrumental uses 3\\1 on the B string.',['Fret B string at fret 3 and pick it.','Slide the same finger to fret 1 while the string rings.','Avoid lifting your finger during the slide.','Practice alternating 1/3 and 3\\1.'],'What does 3\\1 mean?',['Slide from fret 3 to fret 1','Hammer onto fret 3','Play the third string open'],0,'The backslash shows a descending slide.','Sheet Music']
+);
+function openCherryTechniqueLesson(id){const index={hammer:5,pull:6,up:7,down:8}[id];activeInstrument='Guitar';activeInstrumentLesson=index;page='Instruments';render();window.scrollTo(0,0)}
+
 let activeInstrument='Guitar',activeInstrumentLesson=0;
 function instrumentDone(){try{return JSON.parse(localStorage.getItem('melodie-instrument-lessons')||'[]')}catch(e){return []}}
 function setInstrumentPath(v){activeInstrument=v;activeInstrumentLesson=0;render()}
@@ -447,7 +469,7 @@ function cherryToggleRepeats(){cherryShowRepeats=!cherryShowRepeats;render()}
 function cherryJump(i){const el=document.getElementById('cherry-section-'+i);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
 function cherryExplain(id){cherryActiveTechnique=cherryActiveTechnique===id?null:id;render();const el=document.getElementById('cherry-techniques');if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'})}
 function cherryTechniqueHTML(){
-return '<div class="cherry-technique-box" id="cherry-techniques"><h3>Fingerpicking techniques</h3><p class="muted">Select a technique to see how it works and practice it using this arrangement.</p><div class="cherry-technique-buttons">'+cherryTechniques.map(t=>'<button class="'+(cherryActiveTechnique===t.id?'active':'')+'" onclick="cherryExplain(\''+t.id+'\')"><code>'+t.symbol.replaceAll('\\','&#92;')+'</code> '+t.name+'</button>').join('')+'</div>'+(cherryActiveTechnique?(()=>{const t=cherryTechniques.find(x=>x.id===cherryActiveTechnique);return '<div class="cherry-technique-detail"><h4>'+t.name+' <code>'+t.example.replaceAll('\\','&#92;')+'</code></h4><p>'+t.description+'</p><ol>'+t.steps.map(s=>'<li>'+s+'</li>').join('')+'</ol><p><strong>Try it in Cherry Wine:</strong> '+t.practice+'</p></div>'})():'')+'</div>';
+return '<div class="cherry-technique-box" id="cherry-techniques"><h3>Fingerpicking techniques</h3><p class="muted">Select a technique to see how it works and practice it using this arrangement.</p><div class="cherry-technique-buttons">'+cherryTechniques.map(t=>'<button class="'+(cherryActiveTechnique===t.id?'active':'')+'" onclick="cherryExplain(\''+t.id+'\')"><code>'+t.symbol.replaceAll('\\','&#92;')+'</code> '+t.name+'</button>').join('')+'</div>'+(cherryActiveTechnique?(()=>{const t=cherryTechniques.find(x=>x.id===cherryActiveTechnique);return '<div class="cherry-technique-detail"><h4>'+t.name+' <code>'+t.example.replaceAll('\\','&#92;')+'</code></h4><p>'+t.description+'</p><ol>'+t.steps.map(s=>'<li>'+s+'</li>').join('')+'</ol><p><strong>Try it in Cherry Wine:</strong> '+t.practice+'</p><button class="primary" onclick="openCherryTechniqueLesson(\''+t.id+'\')">Open full Guitar lesson + quiz</button></div>'})():'')+'</div>';
 }
 function cherryWineScore(){
 const flattened=[...cherryTabBlocks[0][1],...cherryTabBlocks[1][1],...cherryTabBlocks[2][1],...cherryTabBlocks[3][1],...cherryTabBlocks[4][1],...cherryTabBlocks[5][1]],done=cherryDone();
