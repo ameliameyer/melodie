@@ -62,35 +62,81 @@ function toggleLesson(i){let x=completion();x=x.includes(i)?x.filter(n=>n!==i):[
 function piano(){let white=['C','D','E','F','G','A','B','C','D','E','F','G','A','B'];let blackAfter=[0,1,3,4,5,7,8,10,11,12];return '<div class="keyboard">'+white.map(n=>'<div class="white '+(notes().includes(n)?'on':'')+'">'+n+'</div>').join('')+blackAfter.map(i=>'<div class="black" style="left:'+((i+1)/14*100)+'%"></div>').join('')+'</div>'}
 function guitar(){let tuning=['E','B','G','D','A','E'];return '<div class="fret"><table><tr><th>String</th>'+Array.from({length:13},(_,f)=>'<th>'+f+'</th>').join('')+'</tr>'+tuning.map(n=>'<tr><th>'+n+'</th>'+Array.from({length:13},(_,f)=>{let pitch=chromatic[(chromatic.indexOf(n)+f)%12];return '<td>'+(notes().includes(pitch)?'<span class="note">'+pitch+'</span>':'')+'</td>'}).join('')+'</tr>').join('')+'</table></div><p class="muted">Standard tuning (E A D G B E). Highlighted notes belong to the selected scale.</p>'}
 
-let notationMode='Scale';
+
+let notationMode='Scale', chordQuality='Major', inversion=0, clef='Treble';
 const keyInfo={
 'C':{tonic:'C',sig:0},'C♯':{tonic:'D♭',sig:-5},'D':{tonic:'D',sig:2},'D♯':{tonic:'E♭',sig:-3},'E':{tonic:'E',sig:4},'F':{tonic:'F',sig:-1},'F♯':{tonic:'F♯',sig:6},'G':{tonic:'G',sig:1},'G♯':{tonic:'A♭',sig:-4},'A':{tonic:'A',sig:3},'A♯':{tonic:'B♭',sig:-2},'B':{tonic:'B',sig:5}};
-const noteLetters=['C','D','E','F','G','A','B'];
-const naturalPitch={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const noteLetters=['C','D','E','F','G','A','B'], naturalPitch={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const qualities={
+'Major':{intervals:[0,4,7],degrees:[0,2,4]},'Minor':{intervals:[0,3,7],degrees:[0,2,4]},
+'Diminished':{intervals:[0,3,6],degrees:[0,2,4]},'Augmented':{intervals:[0,4,8],degrees:[0,2,4]},
+'Major 7':{intervals:[0,4,7,11],degrees:[0,2,4,6]},
+'Dominant 7':{intervals:[0,4,7,10],degrees:[0,2,4,6]},
+'Minor 7':{intervals:[0,3,7,10],degrees:[0,2,4,6]},
+'Half-diminished 7':{intervals:[0,3,6,10],degrees:[0,2,4,6]},
+'Diminished 7':{intervals:[0,3,6,9],degrees:[0,2,4,6]},
+'Suspended 4':{intervals:[0,5,7],degrees:[0,3,4]}
+};
+function setNotationMode(v){notationMode=v;inversion=0;render()}
+function setQuality(v){chordQuality=v;inversion=0;render()}
+function setInversion(v){inversion=Number(v);render()}
+function setClef(v){clef=v;render()}
+function signatureAccidentals(sig){
+const letters=sig>0?['F','C','G','D','A','E','B']:['B','E','A','D','G','C','F'];
+const map={};for(let i=0;i<Math.abs(sig);i++)map[letters[i]]=sig>0?'♯':'♭';return map;
+}
+function spellingFor(pitch,letter){
+let delta=(pitch-naturalPitch[letter]+12)%12;
+return {letter,accidental:delta===0?'':delta===1?'♯':delta===2?'𝄪':delta===11?'♭':delta===10?'𝄫':'?',pitch};
+}
 function notationData(){
-const offsets=notationMode==='Chord'?(scale==='Minor'?[0,3,7]:[0,4,7]):patterns[scale];
-const rootIndex=chromatic.indexOf(root), tonic=keyInfo[root].tonic;
-const letterStart=noteLetters.indexOf(tonic[0]);
-const degreeSteps=notationMode==='Chord'?[0,2,4]:scale==='Pentatonic'?[0,1,2,4,5]:[0,1,2,3,4,5,6];
-const spelling=offsets.map((offset,i)=>{const letter=noteLetters[(letterStart+degreeSteps[i])%7];const pitch=(rootIndex+offset)%12;let delta=(pitch-naturalPitch[letter]+12)%12;const accidental=delta===11?'♭':delta===1?'♯':delta===2?'𝄪':delta===10?'𝄫':'';return {letter,accidental,label:letter+accidental}});
-const majorSignature=keyInfo[root].sig;
-const minorSig=keyInfo[chromatic[(rootIndex+3)%12]].sig;
-return {spelling,signature:scale==='Minor'?minorSig:majorSignature};
+const tonic=keyInfo[root].tonic,rootPitch=chromatic.indexOf(root);
+const keySig=scale==='Minor'?keyInfo[chromatic[(rootPitch+3)%12]].sig:keyInfo[root].sig;
+const spec=notationMode==='Chord'?qualities[chordQuality]:null;
+const offsets=spec?spec.intervals:patterns[scale];
+const degrees=spec?spec.degrees:scale==='Pentatonic'?[0,1,2,4,5]:[0,1,2,3,4,5,6];
+const start=noteLetters.indexOf(tonic[0]);
+let spelling=offsets.map((offset,i)=>spellingFor((rootPitch+offset)%12,noteLetters[(start+degrees[i])%7]));
+const count=spelling.length;
+if(notationMode==='Chord'){
+const shift=inversion%count;
+spelling=spelling.slice(shift).concat(spelling.slice(0,shift));
 }
-function setNotationMode(v){notationMode=v;render()}
+const signature=notationMode==='Chord'?keyInfo[root].sig:keySig;
+const sigMap=signatureAccidentals(signature);
+const noteData=spelling.map(n=>({...n,label:n.letter+n.accidental,explicit:n.accidental!== (sigMap[n.letter]||'')}));
+return {spelling:noteData,signature,signatureMap:sigMap,tonic};
+}
 function staffSVG(){
-const data=notationData(),sig=data.signature;
-const sharpPositions=[70,85,65,80,95,75,90],flatPositions=[90,75,95,80,100,85,105];
-const sigCount=Math.abs(sig), startX=105, noteX=145+sigCount*18;
-const lineY=[70,80,90,100,110], stepY=5;
-const staffIndex={E:0,F:1,G:2,A:3,B:4,C:5,D:6};
-const noteY=(letter,octave)=>110-(staffIndex[letter]+(octave-4)*7)*stepY;
-const signSvg=Array.from({length:sigCount},(_,i)=>'<text x="'+(startX+i*18)+'" y="'+(sig>0?sharpPositions[i]:flatPositions[i])+'" font-family="serif" font-size="25" fill="#1a222c">'+(sig>0?'♯':'♭')+'</text>').join('');
-const notesSvg=data.spelling.map((n,i)=>{let octave=notationMode==='Chord'?4:4;if(notationMode==='Scale'&&i>0){let first=data.spelling[0].letter;octave=4+(noteLetters.indexOf(n.letter)<noteLetters.indexOf(first)?1:0)}if(notationMode==='Chord'){octave=4;}const y=noteY(n.letter,octave),x=notationMode==='Chord'?noteX+20:noteX+i*49;const extra=y>110?Array.from({length:Math.floor((y-110)/10)},(_,k)=>'<line x1="'+(x-14)+'" x2="'+(x+14)+'" y1="'+(120+k*10)+'" y2="'+(120+k*10)+'" stroke="#1a222c"/>').join(''):'';return extra+'<ellipse cx="'+x+'" cy="'+y+'" rx="8" ry="5.7" transform="rotate(-20 '+x+' '+y+')" fill="#455b75"/>'+(notationMode==='Chord'?'':'<line x1="'+(x+7)+'" y1="'+y+'" x2="'+(x+7)+'" y2="'+(y-31)+'" stroke="#455b75" stroke-width="1.7"/>')+'<text x="'+x+'" y="155" font-family="Montserrat,sans-serif" font-size="11" text-anchor="middle" fill="#455b75">'+(notationMode==='Chord'?'':n.label)+'</text>'}).join('');
-const width=Math.max(520,noteX+(notationMode==='Chord'?90:data.spelling.length*49+30));
-return '<div class="staff-wrap"><svg viewBox="0 0 '+width+' 175" role="img" aria-label="'+root+' '+scale+' '+notationMode.toLowerCase()+' on treble clef staff" style="width:100%;min-width:450px;max-width:850px">'+lineY.map(y=>'<line x1="18" y1="'+y+'" x2="'+(width-20)+'" y2="'+y+'" stroke="#56616a" stroke-width="1.2"/>').join('')+'<text x="25" y="115" font-family="serif" font-size="65" fill="#1a222c">𝄞</text>'+signSvg+notesSvg+'</svg></div><p class="muted"><strong>Key signature:</strong> '+(sig===0?'No sharps or flats':Math.abs(sig)+' '+(sig>0?'sharp':'flat')+(Math.abs(sig)===1?'':'s'))+' · <strong>Written notes:</strong> '+data.spelling.map(n=>n.label).join(' – ')+'</p>';
+const data=notationData(),sig=data.signature, bass=clef==='Bass';
+const bottom=bass?{letter:'G',octave:2}:{letter:'E',octave:4};
+const stepIndex=(letter,octave)=>(octave-bottom.octave)*7+noteLetters.indexOf(letter)-noteLetters.indexOf(bottom.letter);
+const yAt=(letter,octave)=>116-stepIndex(letter,octave)*7;
+const width=Math.max(610,190+Math.abs(sig)*21+(notationMode==='Scale'?data.spelling.length*53:180));
+const sigOrder=sig>0?['F','C','G','D','A','E','B']:['B','E','A','D','G','C','F'];
+const sharpOct=bass?[3,3,3,3,2,3,2]:[5,5,5,5,4,5,4];
+const flatOct=bass?[2,3,2,3,2,3,2]:[4,5,4,5,4,5,4];
+const sigSvg=sigOrder.slice(0,Math.abs(sig)).map((l,i)=>'<text x="'+(100+i*21)+'" y="'+(yAt(l,(sig>0?sharpOct:flatOct)[i])+8)+'" font-family="serif" font-size="27" fill="#1a222c">'+(sig>0?'♯':'♭')+'</text>').join('');
+let octave=bass?2:4,prev=-1;
+const baseX=140+Math.abs(sig)*21;
+const noteSvg=data.spelling.map((n,i)=>{
+const idx=noteLetters.indexOf(n.letter);
+if(i===0){octave=bass?(notationMode==='Chord'?2:3):4;}
+else if(idx<=prev)octave++;
+prev=idx;
+const y=yAt(n.letter,octave),x=notationMode==='Chord'?baseX+25:baseX+i*53;
+let ledger='';
+for(let yy=130;yy<=y+1;yy+=14)ledger+='<line x1="'+(x-14)+'" x2="'+(x+14)+'" y1="'+yy+'" y2="'+yy+'" stroke="#1a222c"/>';
+for(let yy=60;yy>=y-1;yy-=14)ledger+='<line x1="'+(x-14)+'" x2="'+(x+14)+'" y1="'+yy+'" y2="'+yy+'" stroke="#1a222c"/>';
+const accidental=n.explicit?'<text x="'+(x-(notationMode==='Chord'?34:23))+'" y="'+(y+7)+'" font-family="serif" font-size="23" fill="#1a222c">'+(n.accidental||'♮')+'</text>':'';
+return ledger+accidental+'<ellipse cx="'+x+'" cy="'+y+'" rx="9" ry="6" transform="rotate(-20 '+x+' '+y+')" fill="#455b75"/>'+(notationMode==='Scale'?'<line x1="'+(x+8)+'" y1="'+y+'" x2="'+(x+8)+'" y2="'+(y-34)+'" stroke="#455b75" stroke-width="1.5"/>':'')+(notationMode==='Scale'?'<text x="'+x+'" y="180" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="12" fill="#455b75">'+n.label+'</text>':'');
+}).join('');
+return '<div class="staff-wrap"><svg viewBox="0 0 '+width+' 195" role="img" aria-label="'+data.tonic+' '+(notationMode==='Chord'?chordQuality+' chord':' '+scale+' scale')+' on '+clef.toLowerCase()+' clef staff" style="width:100%;min-width:470px;max-width:900px">'+[60,74,88,102,116].map(y=>'<line x1="18" x2="'+(width-20)+'" y1="'+y+'" y2="'+y+'" stroke="#56616a" stroke-width="1.3"/>').join('')+'<text x="26" y="'+(bass?109:117)+'" font-family="serif" font-size="'+(bass?57:68)+'" fill="#1a222c">'+(bass?'𝄢':'𝄞')+'</text>'+sigSvg+noteSvg+'</svg></div><p class="muted"><strong>Key signature:</strong> '+(sig===0?'None':Math.abs(sig)+' '+(sig>0?'sharp':'flat')+(Math.abs(sig)===1?'':'s'))+' · <strong>Written notes:</strong> '+data.spelling.map(n=>n.label).join(' – ')+'</p>';
 }
-function explorer(){return '<h1>Scales & Chords</h1><p>Explore the same notes on different instruments. Chord-specific fingerings and inversions are planned for the next release.</p><div class="panel"><div class="toolbar"><label>Root note <select onchange="setRoot(this.value)">'+chromatic.map(n=>'<option '+(n===root?'selected':'')+'>'+n+'</option>').join('')+'</select></label><label>Scale <select onchange="setScale(this.value)">'+Object.keys(patterns).map(n=>'<option '+(n===scale?'selected':'')+'>'+n+'</option>').join('')+'</select></label></div><p><strong>Notes:</strong> '+notes().join(' · ')+'</p><h3>Staff notation</h3>'+buttons(['Scale','Chord'],notationMode,'setNotationMode')+staffSVG()+'<h3>Instrument view</h3>'+buttons(['Piano','Guitar','Cello'],instrument,'setInstrument')+(instrument==='Piano'?piano():instrument==='Guitar'?guitar():'<p>Cello fingerboard mapping is coming soon. Cello strings are tuned C–G–D–A.</p>')+'</div>'}
+function explorer(){
+const data=notationData();
+return '<h1>Scales & Chords</h1><p>Explore written note spelling, key signatures, chord qualities and inversions on treble or bass clef.</p><div class="panel"><div class="toolbar"><label>Root note <select onchange="setRoot(this.value)">'+chromatic.map(n=>'<option '+(n===root?'selected':'')+'>'+n+'</option>').join('')+'</select></label><label>Scale <select onchange="setScale(this.value)">'+Object.keys(patterns).map(n=>'<option '+(n===scale?'selected':'')+'>'+n+'</option>').join('')+'</select></label></div><h3>Staff notation</h3>'+buttons(['Scale','Chord'],notationMode,'setNotationMode')+(notationMode==='Chord'?'<div class="toolbar"><label>Chord quality <select onchange="setQuality(this.value)">'+Object.keys(qualities).map(q=>'<option '+(q===chordQuality?'selected':'')+'>'+q+'</option>').join('')+'</select></label><label>Inversion <select onchange="setInversion(this.value)">'+qualities[chordQuality].intervals.map((_,i)=>'<option value="'+i+'" '+(inversion===i?'selected':'')+'>'+(i===0?'Root position':i===1?'1st inversion':i===2?'2nd inversion':'3rd inversion')+'</option>').join('')+'</select></label></div>':'')+'<div class="toolbar">'+buttons(['Treble','Bass'],clef,'setClef')+'</div>'+staffSVG()+'<h3>Instrument view</h3>'+buttons(['Piano','Guitar','Cello'],instrument,'setInstrument')+(instrument==='Piano'?piano():instrument==='Guitar'?guitar():'<p>Cello uses bass clef for much of its repertoire. Its open strings are C–G–D–A; the detailed fingerboard view is still in development.</p>')+'</div>';
+}
 function render(){ $('#nav').innerHTML=pages.map(p=>'<button class="'+(page===p?'active':'')+'" onclick="setPage('+JSON.stringify(p).replace(/"/g,'&quot;')+')">'+p+'</button>').join('');let done=completion().length;
 let content='';
 if(page==='Home')content='<section class="hero"><div><div class="eyebrow">Your personal music learning space</div><h1>Music makes sense here.</h1><p>Learn the theory once. Discover how it connects across piano, guitar, and cello. Build your own library along the way.</p><button class="primary" onclick="setPage(\'Learn\')">Start learning →</button></div><div class="hero-art">♫</div></section><div class="cards">'+[['📖','Music Theory','A structured curriculum','Learn'],['🎹','Scales & Chords','Explore notes across instruments','Scales & Chords'],['🎼','Sheet Music','Your personal collection','Sheet Music'],['✓','Practice','Build confidence through repetition','Practice']].map(c=>'<button class="card" onclick="setPage(\''+c[3]+'\')"><div class="emoji">'+c[0]+'</div><h3>'+c[1]+'</h3><p>'+c[2]+'</p></button>').join('')+'</div><div class="panel" style="margin-top:24px"><h3>Learning progress</h3><p>'+done+' of '+lessons.length+' foundational modules marked complete</p><div class="progress"><div style="width:'+(done/lessons.length*100)+'%"></div></div></div>';
