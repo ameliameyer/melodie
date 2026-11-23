@@ -36,7 +36,7 @@ main{max-width:1050px;padding:35px 22px 80px}
 .lesson button:hover{border-color:#455b75}
 footer{background:#1a222c;color:white;padding:30px}
 @media(max-width:640px){.site-hero{min-height:285px;padding:35px 16px 26px}nav{gap:7px}.hero{padding:4px 0 12px}main{padding:25px 16px 60px}}
-.staff-wrap{overflow-x:auto;padding:14px 0;background:#fff;border-radius:10px}.staff-wrap svg{display:block}.lesson-guide{margin:8px 0 20px}.lesson-guide h3{margin:20px 0 8px;color:#1a222c}.lesson-guide ol{line-height:1.9;color:#4f5c69}.answer-options{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.answer-options button{border:1px solid #ccd4df;border-radius:8px;background:#f2f5f8;padding:10px 15px}.answer-options button:hover{border-color:#455b75}.circle-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px;margin-top:24px;align-items:start}.diatonic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin:14px 0}.diatonic-grid div{background:#f2f5f8;border-radius:8px;padding:12px;text-align:center}.diatonic-grid small{display:block;color:#5d6772;margin-bottom:6px}.diatonic-grid strong{font-size:16px}@media(max-width:750px){.circle-layout{grid-template-columns:1fr}} </style></head><body><header class="site-hero"><div class="hero-particles" aria-hidden="true"></div><div class="site-hero-inner"><div class="site-eyebrow">MY MUSIC LEARNING LAB</div><div class="logo">Mélodie</div><p class="site-subtitle">Music theory · Piano · Guitar · Cello</p><nav id="nav"></nav></div></header><main id="app"></main><footer>Made for the joy of learning music · Mélodie</footer>
+.staff-wrap{overflow-x:auto;padding:14px 0;background:#fff;border-radius:10px}.staff-wrap svg{display:block}.lesson-guide{margin:8px 0 20px}.lesson-guide h3{margin:20px 0 8px;color:#1a222c}.lesson-guide ol{line-height:1.9;color:#4f5c69}.answer-options{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.answer-options button{border:1px solid #ccd4df;border-radius:8px;background:#f2f5f8;padding:10px 15px}.answer-options button:hover{border-color:#455b75}.circle-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px;margin-top:24px;align-items:start}.diatonic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin:14px 0}.diatonic-grid div{background:#f2f5f8;border-radius:8px;padding:12px;text-align:center}.diatonic-grid small{display:block;color:#5d6772;margin-bottom:6px}.diatonic-grid strong{font-size:16px}@media(max-width:750px){.circle-layout{grid-template-columns:1fr}} .black.black-on{background:#557ea8;box-shadow:inset 0 0 0 2px #b6d4f0}</style></head><body><header class="site-hero"><div class="hero-particles" aria-hidden="true"></div><div class="site-hero-inner"><div class="site-eyebrow">MY MUSIC LEARNING LAB</div><div class="logo">Mélodie</div><p class="site-subtitle">Music theory · Piano · Guitar · Cello</p><nav id="nav"></nav></div></header><main id="app"></main><footer>Made for the joy of learning music · Mélodie</footer>
 <script>
 const pages=['Home','Learn','Instruments','Scales & Chords','Circle of Fifths','Sheet Music','Practice'];
 let page='Home', instrument='Piano', root='C', scale='Major', libraryFilter='All';
@@ -59,8 +59,17 @@ function setScale(v){scale=v;render()}
 function setFilter(v){libraryFilter=v;render()}
 function completion(){return JSON.parse(localStorage.getItem('melodie-lessons')||'[]')}
 function toggleLesson(i){let x=completion();x=x.includes(i)?x.filter(n=>n!==i):[...x,i];localStorage.setItem('melodie-lessons',JSON.stringify(x));render()}
-function piano(){let white=['C','D','E','F','G','A','B','C','D','E','F','G','A','B'];let blackAfter=[0,1,3,4,5,7,8,10,11,12];return '<div class="keyboard">'+white.map(n=>'<div class="white '+(notes().includes(n)?'on':'')+'">'+n+'</div>').join('')+blackAfter.map(i=>'<div class="black" style="left:'+((i+1)/14*100)+'%"></div>').join('')+'</div>'}
-function guitar(){let tuning=['E','B','G','D','A','E'];return '<div class="fret"><table><tr><th>String</th>'+Array.from({length:13},(_,f)=>'<th>'+(f+guitarStart)+'</th>').join('')+'</tr>'+tuning.map(n=>'<tr><th>'+n+'</th>'+Array.from({length:13},(_,f)=>{let pitch=chromatic[(chromatic.indexOf(n)+f+guitarStart)%12];return '<td>'+(notes().includes(pitch)?'<span class="note">'+pitch+'</span>':'')+'</td>'}).join('')+'</tr>').join('')+'</table></div><p class="muted">Standard tuning (E A D G B E). Highlighted notes belong to the selected scale.</p>'}
+function piano(){
+const white=['C','D','E','F','G','A','B','C','D','E','F','G','A','B'],blackAfter=[0,1,3,4,5,7,8,10,11,12];
+const selected=notationMode==='Chord'?qualities[chordQuality].intervals:patterns[scale],rootPitch=chromatic.indexOf(root);
+const on=p=>selected.some(d=>(rootPitch+d)%12===p);
+return '<div class="keyboard">'+white.map(n=>'<div class="white '+(on(naturalPitch[n])?'on':'')+'">'+n+'</div>').join('')+blackAfter.map(i=>{const n=white[i],pitch=(naturalPitch[n]+1)%12;return '<div title="'+chromatic[pitch]+'" class="black '+(on(pitch)?'black-on':'')+'" style="left:'+((i+1)/14*100)+'%"></div>'}).join('')+'</div><p class="muted">Highlighted keys show the selected '+(notationMode==='Chord'?'chord tones':'scale tones')+'. Voicing octave choices are reflected on the staff above.</p>';
+}
+function guitar(){
+const tuning=['E','B','G','D','A','E'],selected=notationMode==='Chord'?qualities[chordQuality].intervals:patterns[scale],rootPitch=chromatic.indexOf(root);
+const on=p=>selected.some(d=>(rootPitch+d)%12===p);
+return '<div class="fret"><table><tr><th>String</th>'+Array.from({length:13},(_,f)=>'<th>'+(f+guitarStart)+'</th>').join('')+'</tr>'+tuning.map(n=>'<tr><th>'+n+'</th>'+Array.from({length:13},(_,f)=>{let pitch=(naturalPitch[n]+f+guitarStart)%12;return '<td>'+(on(pitch)?'<span class="note">'+chromatic[pitch]+'</span>':'')+'</td>'}).join('')+'</tr>').join('')+'</table></div><p class="muted">Standard tuning (E A D G B E, low to high). Highlighted pitches belong to the selected '+(notationMode==='Chord'?'chord':'scale')+'. This is a note map, not a recommended fingering.</p>';
+}
 
 
 let notationMode='Scale', chordQuality='Major', inversion=0, clef='Treble';
@@ -119,11 +128,13 @@ const flatOct=bass?[2,3,2,3,2,3,2]:[4,5,4,5,4,5,4];
 const sigSvg=sigOrder.slice(0,Math.abs(sig)).map((l,i)=>'<text x="'+(100+i*21)+'" y="'+(yAt(l,(sig>0?sharpOct:flatOct)[i])+8)+'" font-family="serif" font-size="27" fill="#1a222c">'+(sig>0?'♯':'♭')+'</text>').join('');
 let octave=bass?2:4,prev=-1;
 const baseX=140+Math.abs(sig)*21;
-const noteSvg=data.spelling.map((n,i)=>{
+const displayNotes=notationMode==='Chord'?voicingNotes():data.spelling;
+const noteSvg=displayNotes.map((n,i)=>{
 const idx=noteLetters.indexOf(n.letter);
 if(i===0){octave=bass?(notationMode==='Chord'?2:3):4;}
 else if(idx<=prev)octave++;
 prev=idx;
+if(notationMode==='Chord')octave=n.octave;
 const y=yAt(n.letter,octave),x=notationMode==='Chord'?baseX+25:baseX+i*53;
 let ledger='';
 for(let yy=130;yy<=y+1;yy+=14)ledger+='<line x1="'+(x-14)+'" x2="'+(x+14)+'" y1="'+yy+'" y2="'+yy+'" stroke="#1a222c"/>';
@@ -174,10 +185,11 @@ return '<g role="button" tabindex="0" aria-label="'+k.name+' major, '+k.minor+' 
 return '<h1>Circle of Fifths</h1><p>Click a major key on the outer circle to explore its key signature, relative minor, scale notes, and diatonic chords. Clockwise adds sharps; counterclockwise adds flats.</p><div class="circle-layout"><div class="panel"><svg viewBox="0 0 450 450" role="group" aria-label="Interactive circle of fifths" style="width:100%;max-width:510px;display:block;margin:auto"><circle cx="225" cy="225" r="210" fill="none" stroke="#dce3eb" stroke-width="2"/><circle cx="225" cy="225" r="146" fill="none" stroke="#dce3eb" stroke-width="2"/>'+sectors+'<circle cx="225" cy="225" r="67" fill="#f4f4f4"/><text x="225" y="213" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="12" fill="#5d6772">SELECTED KEY</text><text x="225" y="241" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="26" font-weight="700" fill="#1a222c">'+selected.name+'</text></svg><p class="muted" style="text-align:center">Outer ring: major keys · Inner ring: relative minor keys</p></div><div class="panel"><span class="pill">KEY EXPLORER</span><h2>'+selected.name+' major</h2><p><strong>Relative minor:</strong> '+selected.minor+'</p><p><strong>Key signature:</strong> '+(selected.sig===0?'No sharps or flats':Math.abs(selected.sig)+' '+(selected.sig>0?'sharp':'flat')+(Math.abs(selected.sig)>1?'s':''))+'</p><h3>Major scale</h3><p>'+scaleNotes.join(' · ')+'</p><h3>Diatonic triads</h3><div class="diatonic-grid">'+chordNames.map((ch,i)=>'<div><small>'+['I','ii','iii','IV','V','vi','vii°'][i]+'</small><strong>'+ch+'</strong></div>').join('')+'</div><p class="muted">The V chord typically creates tension that resolves to I. Try I–IV–V–I to hear it.</p><button class="primary" onclick="exploreCircleKey()">Explore this key on the staff</button></div></div>';
 }
 function voicingNotes(){
-const d=notationData();let a=d.spelling.map((n,i)=>({...n,octave:pianoOctave+(i>0&&noteLetters.indexOf(n.letter)<=noteLetters.indexOf(d.spelling[0].letter)?1:0)}));
+const d=notationData();let octave=pianoOctave,prev=-1;
+let a=d.spelling.map(n=>{const idx=noteLetters.indexOf(n.letter);if(prev>=0&&idx<=prev)octave++;prev=idx;return {...n,octave};});
 if(voicing==='Open'&&a.length>2)a[1].octave++;
 if(voicing==='Spread'&&a.length>2){a[1].octave++;a[a.length-1].octave++}
-return a;
+return a.sort((x,y)=>(x.octave*7+noteLetters.indexOf(x.letter))-(y.octave*7+noteLetters.indexOf(y.letter)));
 }
 function instrumentChordHTML(){
 if(notationMode!=='Chord')return '';
