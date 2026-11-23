@@ -1,8 +1,42 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#172b30"><title>Mélodie — Music Learning</title>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#172b30"><title>Mélodie | My Music Learning Lab</title><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{font-family:Inter,system-ui,-apple-system,sans-serif;color:#23343a;background:#f7f7f3}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}header{background:#18353b;color:#fff;padding:18px max(24px,calc((100vw - 1100px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.logo{font-family:Georgia,serif;font-size:30px;letter-spacing:.5px}nav{display:flex;gap:7px;flex-wrap:wrap}nav button{border:0;background:transparent;color:#dce6e4;padding:10px 12px;border-radius:9px}nav button.active,nav button:hover{background:#315158;color:#fff}main{max-width:1100px;margin:auto;padding:36px 24px 80px}.hero{background:#e9eee9;border-radius:22px;padding:40px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#577e77;font-weight:700}h1{font:normal clamp(35px,5vw,58px) Georgia,serif;margin:12px 0}h2{font:normal 32px Georgia,serif}h3{margin:0 0 10px}p{line-height:1.65;color:#5a696b}.hero-art{font-size:90px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:24px}.card,.panel{background:#fff;border:1px solid #e1e6e3;border-radius:16px;padding:24px}.card{cursor:pointer;text-align:left;color:inherit}.card:hover{border-color:#66988e;box-shadow:0 8px 24px #18353b10}.card .emoji{font-size:30px}.muted{color:#617275}.pill{display:inline-block;background:#e4eee9;color:#356b60;padding:5px 10px;border-radius:30px;font-size:12px;font-weight:700}.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:20px 0}select,input{padding:10px 12px;border:1px solid #ced8d2;border-radius:9px;background:white;max-width:100%}.primary{background:#27685f;color:#fff;border:0;border-radius:9px;padding:11px 16px}.keyboard{display:flex;position:relative;height:190px;max-width:720px;margin:24px 0}.white{flex:1;border:1px solid #777;border-radius:0 0 5px 5px;background:white;position:relative;display:flex;align-items:end;justify-content:center;padding-bottom:10px;font-size:12px}.white.on{background:#a6d6c7}.black{position:absolute;top:0;width:6.5%;height:60%;background:#263037;border-radius:0 0 5px 5px;z-index:2;transform:translateX(-50%)}.fret{overflow-x:auto}.fret table{border-collapse:collapse;width:100%;min-width:470px}.fret td{border-bottom:2px solid #89938f;border-right:2px solid #c3b7a5;text-align:center;height:38px;min-width:50px}.fret th{font-weight:500;color:#667}.note{display:inline-grid;place-items:center;background:#327d70;color:white;border-radius:50%;height:29px;width:29px;font-size:12px}.lesson{margin:12px 0}.lesson button{width:100%;text-align:left;background:#fff;border:1px solid #e1e6e3;padding:16px;border-radius:10px}.lesson button:hover{border-color:#327d70}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{padding:10px 14px;border-radius:9px;border:1px solid #cbd8d3;background:#fff}.tabs button.active{background:#27685f;color:white}.hidden{display:none}.progress{height:9px;background:#e2e9e5;border-radius:9px;overflow:hidden}.progress div{height:100%;background:#3a8a78}footer{padding:25px;text-align:center;color:#82918c;font-size:13px}@media(max-width:640px){.hero{grid-template-columns:1fr;padding:26px}.hero-art{display:none}header{padding:16px 24px}main{padding:24px 16px}}
-</style></head><body><header><div class="logo">Mélodie ♫</div><nav id="nav"></nav></header><main id="app"></main><footer>Made for the joy of learning music · Mélodie</footer>
+
+/* Shared visual language with Ducks In Order and Amelia's portfolio */
+:root{font-family:Montserrat,system-ui,sans-serif;color:#1a222c;background:#f4f4f4}
+body{background:#f4f4f4;color:#1a222c;font-family:Montserrat,sans-serif}
+.site-hero{height:auto;min-height:310px;padding:45px 22px 34px;background:#1a222c;color:white;position:relative;display:flex;justify-content:center;align-items:center;overflow:hidden;text-align:center}
+.hero-particles{position:absolute;inset:0;pointer-events:none;opacity:.5;background-image:radial-gradient(circle at 12% 27%,#6f88a5 1px,transparent 2px),radial-gradient(circle at 68% 18%,#6f88a5 1px,transparent 2px),radial-gradient(circle at 83% 65%,#6f88a5 1px,transparent 2px),radial-gradient(circle at 31% 77%,#6f88a5 1px,transparent 2px);background-size:240px 190px,310px 250px,270px 210px,360px 240px}
+.site-hero-inner{position:relative;z-index:1;max-width:1100px;width:100%}
+.site-eyebrow{font-size:.73rem;letter-spacing:.18em;color:#c6d7e7;font-weight:700}
+.logo{font:600 clamp(2.2rem,5vw,3.5rem) Montserrat,sans-serif;letter-spacing:0;margin:10px 0}
+.site-subtitle{color:#d8e0e9;margin:0 0 24px;font-size:.95rem}
+nav{justify-content:center;gap:14px}
+nav button{font-family:Montserrat,sans-serif;color:white;font-size:.82rem;font-weight:500;padding:9px 8px}
+nav button.active,nav button:hover{background:transparent;color:#a9c0d7;text-decoration:underline;text-underline-offset:7px}
+main{max-width:1050px;padding:35px 22px 80px}
+.hero{background:transparent;padding:8px 0 15px;border-radius:0;grid-template-columns:1fr;display:block}
+.hero .eyebrow{color:#455b75}
+.hero h1,h1,h2{font-family:Montserrat,sans-serif;color:#1a222c;font-weight:600}
+.hero h1{font-size:2rem;margin:10px 0}
+.hero p,p{color:#5d6772}
+.hero-art{display:none}
+.cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card,.panel{background:#fff;border:1px solid #e1e6ec;border-radius:12px;padding:22px;box-shadow:0 3px 12px #1a222c08}
+.card:hover{border-color:#9caec3;transform:translateY(-3px);box-shadow:0 5px 18px #1a222c12}
+.pill{background:#e9eff5;color:#455b75}
+.primary{background:#455b75;border-radius:8px}
+.primary:hover{background:#354a62}
+.progress{background:#e7ebef}.progress div{background:#455b75}
+.tabs button.active{background:#455b75}
+.note{background:#455b75}
+.white.on{background:#cfdfed}
+.lesson button{border:1px solid #e1e6ec}
+.lesson button:hover{border-color:#455b75}
+footer{background:#1a222c;color:white;padding:30px}
+@media(max-width:640px){.site-hero{min-height:285px;padding:35px 16px 26px}nav{gap:7px}.hero{padding:4px 0 12px}main{padding:25px 16px 60px}}
+</style></head><body><header class="site-hero"><div class="hero-particles" aria-hidden="true"></div><div class="site-hero-inner"><div class="site-eyebrow">MY MUSIC LEARNING LAB</div><div class="logo">Mélodie</div><p class="site-subtitle">Music theory · Piano · Guitar · Cello</p><nav id="nav"></nav></div></header><main id="app"></main><footer>Made for the joy of learning music · Mélodie</footer>
 <script>
 const pages=['Home','Learn','Instruments','Scales & Chords','Sheet Music','Practice'];
 let page='Home', instrument='Piano', root='C', scale='Major', libraryFilter='All';
