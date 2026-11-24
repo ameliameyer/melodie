@@ -75,7 +75,12 @@ return '<div class="keyboard">'+white.map(n=>'<div class="white '+(on(naturalPit
 function guitar(){
 const tuning=['E','B','G','D','A','E'],selected=notationMode==='Chord'?qualities[chordQuality].intervals:patterns[scale],rootPitch=chromatic.indexOf(root);
 const on=p=>selected.some(d=>(rootPitch+d)%12===p);
-return '<div class="fret"><table><tr><th>String</th>'+Array.from({length:13},(_,f)=>'<th>'+(f+guitarStart)+'</th>').join('')+'</tr>'+tuning.map(n=>'<tr><th>'+n+'</th>'+Array.from({length:13},(_,f)=>{let pitch=(naturalPitch[n]+f+guitarStart)%12;return '<td>'+(on(pitch)?'<span class="note">'+chromatic[pitch]+'</span>':'')+'</td>'}).join('')+'</tr>').join('')+'</table></div><p class="muted">Standard tuning (E A D G B E, low to high). Highlighted pitches belong to the selected '+(notationMode==='Chord'?'chord':'scale')+'. This is a note map, not a recommended fingering.</p>';
+const x=f=>80+f*54,y=s=>58+s*34;
+const labels=Array.from({length:13},(_,f)=>'<text x="'+x(f)+'" y="22" text-anchor="middle" font-size="13" fill="currentColor">'+(f+guitarStart)+'</text>').join('');
+const wires=Array.from({length:14},(_,f)=>'<line x1="'+(53+f*54)+'" x2="'+(53+f*54)+'" y1="58" y2="228" stroke="'+(f===1&&guitarStart===0?'#455b75':'#b5a99a')+'" stroke-width="'+(f===1&&guitarStart===0?5:1.5)+'"/>').join('');
+const strings=tuning.map((n,s)=>'<text x="25" y="'+(y(s)+4)+'" text-anchor="middle" font-size="14" font-weight="600" fill="currentColor">'+(s===0?'e':n)+'</text><line x1="53" x2="755" y1="'+y(s)+'" y2="'+y(s)+'" stroke="#89938f" stroke-width="'+(1+s*.28)+'"/>').join('');
+const dots=tuning.map((n,s)=>Array.from({length:13},(_,f)=>{const p=(naturalPitch[n]+f+guitarStart)%12;return on(p)?'<circle cx="'+x(f)+'" cy="'+y(s)+'" r="13" fill="#455b75"/><text x="'+x(f)+'" y="'+(y(s)+4)+'" text-anchor="middle" font-size="11" font-weight="700" fill="white">'+chromatic[p]+'</text>':''}).join('')).join('');
+return '<div class="fret"><svg viewBox="0 0 775 255" style="display:block;width:100%;min-width:680px" role="img" aria-label="Guitar fretboard with selected notes centered on each string">'+labels+wires+strings+dots+'</svg></div><p class="muted">High e is at the top; low E is at the bottom. Each highlighted note sits directly on its string, between the fret wires. Fret 0 means an open string. This is a note map, not a recommended fingering.</p>';
 }
 
 
